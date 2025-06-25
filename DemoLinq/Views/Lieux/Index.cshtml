@@ -1,0 +1,87 @@
+﻿@model IEnumerable<DemoLinq.Models.Lieu>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<form asp-controller="Lieux" asp-action="Search" method="get">
+    <input type="text" name="recherche" id="recherche"/>
+    <input type="submit" value="Chercher"/>
+</form>
+<a asp-controller="Lieux" asp-action="Filtre" asp-route-id="Monument" class="btn btn-primary">
+    Monuments
+    </a>
+<a asp-controller="Lieux" asp-action="Filtre" asp-route-id="Lac" class="btn btn-primary">
+    Lacs
+</a>
+<a asp-controller="Lieux" asp-action="Filtre" asp-route-id="Ville" class="btn btn-primary">
+    Villes
+</a>
+<a asp-controller="Lieux" asp-action="FiltreTaille" asp-route-id="Petits" class="btn btn-primary">
+    Petits
+</a>
+<a asp-controller="Lieux" asp-action="FiltreTaille" asp-route-id="Moyens" class="btn btn-primary">
+    Moyens
+</a>
+<a asp-controller="Lieux" asp-action="FiltreTaille" asp-route-id="Grands" class="btn btn-primary">
+    Grands
+</a>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Latitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Longitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Superficie)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Latitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Longitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Superficie)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

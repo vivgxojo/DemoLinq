@@ -1,0 +1,52 @@
+﻿namespace DemoLinq.Models
+{
+    public static class InitBD
+    {
+        private static readonly string[] Types = { "Parc", "Plage", "Montagne", "Ville", "Forêt", "Lac", "Musée", "Monument" };
+        private static readonly string[] Noms = {
+            "Verdure", "Azur", "Émeraude", "Soleil", "Rocheuse", "Brume", "Étoile", "Cristal",
+            "Val d'Or", "Mystère", "Lumière", "Évasion", "Éden", "Cascade", "Oasis"
+        };
+
+        public static List<Lieu> GenererLieux(int nombre = 50)
+        {
+            var random = new Random();
+            var lieux = new List<Lieu>();
+
+            for (int i = 1; i <= nombre; i++)
+            {
+                var nom = $"{Noms[random.Next(Noms.Length)]} {i}";
+                var type = Types[random.Next(Types.Length)];
+
+                lieux.Add(new Lieu
+                {
+                    //Id = i,
+                    Nom = nom,
+                    Description = $"Un lieu nommé {nom}, de type {type}.",
+                    Type = type,
+                    Latitude = random.Next(-90000000, 90000000), // équivalent à -90.000000 à 90.000000
+                    Longitude = random.Next(-180000000, 180000000), // équivalent à -180.000000 à 180.000000
+                    Superficie = random.Next(100, 100000) // en m² (de 100 à 100 000 m²)
+                });
+            }
+
+            return lieux;
+        }
+
+
+        public static void Initialiser(IApplicationBuilder applicationBuilder)
+        {
+            //Récupérer le contexte de la base de données à partir du service
+            LieuDBContext context = applicationBuilder.ApplicationServices.CreateScope()
+                .ServiceProvider.GetRequiredService<LieuDBContext>();
+
+            if (!context.Lieux.Any())
+            {
+                List<Lieu> ll = GenererLieux();
+                context.Lieux.AddRange(ll);
+                context.SaveChanges();
+            }
+
+        }
+    }
+}
