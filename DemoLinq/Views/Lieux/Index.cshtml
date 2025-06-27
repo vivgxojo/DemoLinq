@@ -1,7 +1,22 @@
-﻿@model IEnumerable<DemoLinq.Models.Lieu>
+﻿@model PaginatedList<DemoLinq.Models.Lieu>
 
 @{
     ViewData["Title"] = "Index";
+
+    // Conserver les paramètres de filtres ou de recherche
+    var FiltreTaille = ViewBag.FiltreTaille ?? "";
+    var Filtre = ViewBag.Filtre ?? "";
+    var Search = ViewBag.Search ?? "";
+
+    var id = ViewBag.FiltreTaille ?? ViewBag.Filtre ?? "";
+
+    // Conserver l'action de contrôleur à rappeler si on a utilisé un filtre ou une recherche
+    var action = "Index";
+    if (FiltreTaille != "") action = "FiltreTaille";
+    else if (Filtre != "") action = "Filtre";
+    else if (Search != "") action = "Search";
+
+    var l = new DemoLinq.Models.Lieu();
 }
 
 <h1>Index</h1>
@@ -35,24 +50,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nom)
+                @Html.DisplayNameFor(_ => l.Nom)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(_ => l.Description)
+            </th>
+            <th>@Html.DisplayNameFor(_ => l.Type)
+            </th>
+            <th>@Html.DisplayNameFor(_ => l.Latitude)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Type)
+                @Html.DisplayNameFor(_ => l.Longitude)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Latitude)
+                @Html.DisplayNameFor(_ => l.Superficie)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Longitude)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Superficie)
-            </th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -85,3 +98,36 @@
 }
     </tbody>
 </table>
+@{
+    // Gérer la pagination, avec des boutons << < > >>
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+<a asp-action=@action
+   asp-route-id=@id
+   asp-route-recherche=@ViewBag.Search
+   asp-route-pageNumber="@(1)"
+   class="btn btn-secondary @prevDisabled">
+    &lt;&lt;
+</a> |
+<a asp-action=@action
+   asp-route-id=@id
+   asp-route-recherche=@ViewBag.Search
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   class="btn btn-secondary @prevDisabled">
+    &lt;
+</a> |
+<a asp-action=@action
+   asp-route-id=@id
+   asp-route-recherche=@ViewBag.Search
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   class="btn btn-secondary @nextDisabled">
+    &gt;
+</a> |
+<a asp-action=@action
+   asp-route-id=@id
+   asp-route-recherche=@ViewBag.Search
+   asp-route-pageNumber="@(Model.TotalPages)"
+   class="btn btn-secondary @nextDisabled">
+    &gt;&gt;
+</a>

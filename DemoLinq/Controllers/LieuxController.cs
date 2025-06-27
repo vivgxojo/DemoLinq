@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DemoLinq.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Http;
 
 namespace DemoLinq.Controllers
 {
@@ -20,36 +21,53 @@ namespace DemoLinq.Controllers
         }
 
         // GET: Lieux
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            return View(await _context.Lieux.ToListAsync());
+            int pageSize = 10; // Nombre d'ingrédients par page
+            return View(await PaginatedList<Lieu>.CreateAsync(_context.Lieux.AsNoTracking(),
+                pageNumber ?? 1, pageSize)); // Créer une page avec une liste paginée
+
+           //return View(await _context.Lieux.ToListAsync());
         }
 
-        public async Task<IActionResult> Search(string recherche)
+        public async Task<IActionResult> Search(string recherche, int? pageNumber)
         {
+            ViewBag.Search = recherche;
+
             // Préparer la requête LINQ
             IQueryable<Lieu> requete = from lieu in _context.Lieux
                                        where lieu.Nom.Contains(recherche)
                                        select lieu;
 
-            // Exécuter la requête asynchrone
-            IEnumerable<Lieu> result = await requete.ToListAsync();
+            int pageSize = 5; // Nombre d'objets par page
+            return View("Index", await PaginatedList<Lieu>.CreateAsync(requete.AsNoTracking(),
+                pageNumber ?? 1, pageSize)); // Créer une page avec les résultats
 
-            return View("Index", result);
+            // Exécuter la requête asynchrone
+            //IEnumerable<Lieu> result = await requete.ToListAsync();
+            //return View("Index", result);
         }
-        public async Task<IActionResult> Filtre(string id)
+        public async Task<IActionResult> Filtre(string id, int? pageNumber)
         {
+            ViewBag.Filtre = id;
+
             // Préparer la requête LINQ avec expression lambda
             IQueryable<Lieu> requete = _context.Lieux.Where(l => l.Type == id);
-            
-            // Exécuter la requête asynchrone
-            IEnumerable<Lieu> result = await requete.ToListAsync();
 
-            return View("Index", result);
+            int pageSize = 5; // Nombre d'objets par page
+            return View("Index", await PaginatedList<Lieu>.CreateAsync(requete.AsNoTracking(),
+                pageNumber ?? 1, pageSize)); // Créer une page avec les résultats
+
+            // Exécuter la requête asynchrone
+            //IEnumerable<Lieu> result = await requete.ToListAsync();
+
+            //return View("Index", result);
         }
 
-        public async Task<IActionResult> FiltreTaille(string id)
+        public async Task<IActionResult> FiltreTaille(string id, int? pageNumber)
         {
+            ViewBag.FiltreTaille = id;
+
             IQueryable<Lieu> requete;
             // Préparer la requête LINQ avec expression lambda
             if (id == "Grands")
@@ -69,11 +87,15 @@ namespace DemoLinq.Controllers
             {
                 return NotFound();
             }
-            
-            // Exécuter la requête asynchrone
-            IEnumerable<Lieu> result = await requete.ToListAsync();
 
-            return View("Index", result);
+            int pageSize = 5; // Nombre d'objets par page
+            return View("Index", await PaginatedList<Lieu>.CreateAsync(requete.AsNoTracking(),
+                pageNumber ?? 1, pageSize)); // Créer une page avec les résultats
+
+            // Exécuter la requête asynchrone
+            //IEnumerable<Lieu> result = await requete.ToListAsync();
+
+            //return View("Index", result);
         }
 
         // GET: Lieux/Details/5
