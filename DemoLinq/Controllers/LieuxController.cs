@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DemoLinq.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DemoLinq.Controllers
 {
@@ -139,6 +140,7 @@ namespace DemoLinq.Controllers
         }
 
         // GET: Lieux/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -159,6 +161,7 @@ namespace DemoLinq.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nom,Description,Type,Latitude,Longitude,Superficie")] Lieu lieu)
         {
             if (id != lieu.Id)
@@ -190,6 +193,7 @@ namespace DemoLinq.Controllers
         }
 
         // GET: Lieux/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -210,6 +214,7 @@ namespace DemoLinq.Controllers
         // POST: Lieux/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var lieu = await _context.Lieux.FindAsync(id);

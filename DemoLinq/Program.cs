@@ -1,4 +1,5 @@
 using DemoLinq.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<LieuDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectLieu"))
     );
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => 
+    options.SignIn.RequireConfirmedAccount =  true)
+    .AddEntityFrameworkStores<LieuDBContext>()
+    .AddDefaultUI()
+    .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
@@ -23,10 +30,12 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
+app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Lieux}/{action=Index}/{id?}")

@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace DemoLinq.Models
 {
-    public class LieuDBContext : DbContext
+    public class LieuDBContext : IdentityDbContext
     {
         public LieuDBContext(DbContextOptions <LieuDBContext> options)
         : base(options) { }

@@ -1,4 +1,6 @@
-﻿namespace DemoLinq.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace DemoLinq.Models
 {
     public static class InitBD
     {
@@ -34,7 +36,7 @@
         }
 
 
-        public static void Initialiser(IApplicationBuilder applicationBuilder)
+         public static async Task Initialiser(IApplicationBuilder applicationBuilder)
         {
             //Récupérer le contexte de la base de données à partir du service
             LieuDBContext context = applicationBuilder.ApplicationServices.CreateScope()
@@ -46,6 +48,41 @@
                 context.Lieux.AddRange(ll);
                 context.SaveChanges();
             }
+
+            RoleManager<IdentityRole> _roleManager = 
+                applicationBuilder.ApplicationServices.CreateScope()
+                .ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            UserManager<IdentityUser> _userManager = 
+                applicationBuilder.ApplicationServices.CreateScope()
+                .ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+            IdentityRole role = await _roleManager.FindByNameAsync("admin");
+            if (role == null)
+            {
+                //Seed un role admin s'il n'existe pas déjà
+                IdentityResult resultRole = await _roleManager.CreateAsync(new IdentityRole("admin"));
+            }
+
+            IdentityUser adminUser = await _userManager.FindByNameAsync("admin@cegep.ca");
+            if (adminUser == null)
+            {
+                //Seed un utilisateur admin s'il n'esxiste pas déjà
+                IdentityResult resultUser = await _userManager.CreateAsync(
+                    new IdentityUser("admin@cegep.ca"));
+            }
+
+            //Récupérer les objets user et admin de la BD
+            IdentityUser userA = await _userManager.FindByNameAsync("admin@cegep.ca");
+            IdentityRole roleA = await _roleManager.FindByNameAsync("admin");
+
+            //Configurer mon user
+            userA.Email = "admin@cegep.ca";
+            userA.PasswordHash = "AQAAAAIAAYagAAAAEBD2GXDGrneD5BDHyDQPxk6qhBxQSWgPcHgxIpddMGWlQfOPNTb4Mwp5PgzG8AxRKw==";
+            userA.EmailConfirmed = true;
+
+            //Associer le rôle admin à notre user
+            IdentityResult resultA = await _userManager.AddToRoleAsync(userA, roleA.Name);
 
         }
     }
