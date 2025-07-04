@@ -24,6 +24,20 @@ namespace DemoLinq.Controllers
         // GET: Lieux
         public async Task<IActionResult> Index(int? pageNumber)
         {
+            int compteur = 0;
+
+            if (HttpContext.Session.Keys.Contains("compteur"))
+            {
+                //Récupérer le compteur de la session
+                compteur = (int)HttpContext.Session.GetInt32("compteur");
+            }
+
+            compteur++;
+
+            //Stocker le compteur dans la session
+            HttpContext.Session.SetInt32("compteur", compteur);
+            ViewBag.Compteur = compteur;
+
             int pageSize = 10; // Nombre d'ingrédients par page
             return View(await PaginatedList<Lieu>.CreateAsync(_context.Lieux.AsNoTracking(),
                 pageNumber ?? 1, pageSize)); // Créer une page avec une liste paginée
@@ -34,6 +48,21 @@ namespace DemoLinq.Controllers
         public async Task<IActionResult> Search(string recherche, int? pageNumber)
         {
             ViewBag.Search = recherche;
+
+            int compteur = 0;
+
+            if (HttpContext.Session.Keys.Contains("compteur"))
+            {
+                //Récupérer le compteur de la session
+                compteur = (int)HttpContext.Session.GetInt32("compteur");
+            }
+
+            compteur++;
+
+            //Stocker le compteur dans la session
+            HttpContext.Session.SetInt32("compteur", compteur);
+            ViewBag.Compteur = compteur;
+            HttpContext.Session.SetString("recherche", recherche);
 
             // Préparer la requête LINQ
             IQueryable<Lieu> requete = from lieu in _context.Lieux
@@ -52,6 +81,19 @@ namespace DemoLinq.Controllers
         {
             ViewBag.Filtre = id;
 
+            int compteur = 0;
+
+            if (HttpContext.Session.Keys.Contains("compteur"))
+            {
+                //Récupérer le compteur de la session
+                compteur = (int)HttpContext.Session.GetInt32("compteur");
+            }
+
+            compteur++;
+
+            //Stocker le compteur dans la session
+            HttpContext.Session.SetInt32("compteur", compteur);
+            ViewBag.Compteur = compteur;
             // Préparer la requête LINQ avec expression lambda
             IQueryable<Lieu> requete = _context.Lieux.Where(l => l.Type == id);
 
@@ -67,6 +109,19 @@ namespace DemoLinq.Controllers
 
         public async Task<IActionResult> FiltreTaille(string id, int? pageNumber)
         {
+            int compteur = 0;
+
+            if (HttpContext.Session.Keys.Contains("compteur"))
+            {
+                //Récupérer le compteur de la session
+                compteur = (int)HttpContext.Session.GetInt32("compteur");
+            }
+
+            compteur++;
+
+            //Stocker le compteur dans la session
+            HttpContext.Session.SetInt32("compteur", compteur);
+            ViewBag.Compteur = compteur;
             ViewBag.FiltreTaille = id;
 
             IQueryable<Lieu> requete;
