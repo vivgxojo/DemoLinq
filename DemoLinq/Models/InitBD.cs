@@ -64,21 +64,21 @@ namespace DemoLinq.Models
                 IdentityResult resultRole = await _roleManager.CreateAsync(new IdentityRole("admin"));
             }
 
-            IdentityUser adminUser = await _userManager.FindByNameAsync("admin@cegep.ca");
+            IdentityUser adminUser = await _userManager.FindByNameAsync("admin2@cegep.ca");
             if (adminUser == null)
             {
                 //Seed un utilisateur admin s'il n'esxiste pas déjà
                 IdentityResult resultUser = await _userManager.CreateAsync(
-                    new IdentityUser("admin@cegep.ca"));
+                    new IdentityUser("admin2@cegep.ca"));
             }
 
             //Récupérer les objets user et admin de la BD
-            IdentityUser userA = await _userManager.FindByNameAsync("admin@cegep.ca");
+            IdentityUser userA = await _userManager.FindByNameAsync("admin2@cegep.ca");
             IdentityRole roleA = await _roleManager.FindByNameAsync("admin");
 
             //Configurer mon user
-            userA.Email = "admin@cegep.ca";
-            userA.PasswordHash = "AQAAAAIAAYagAAAAEBD2GXDGrneD5BDHyDQPxk6qhBxQSWgPcHgxIpddMGWlQfOPNTb4Mwp5PgzG8AxRKw==";
+            userA.Email = "admin2@cegep.ca";
+            userA.PasswordHash = "AQAAAAIAAYagAAAAEJ/Jl8lSDGFHgp1OVzJhis0aN9qCBhqelyGT2cFVOP1AXz4/FcUKL4IvFalxbvMjtw==";
             userA.EmailConfirmed = true;
 
             //Associer le rôle admin à notre user
