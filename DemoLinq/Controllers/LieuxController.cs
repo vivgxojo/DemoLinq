@@ -9,6 +9,7 @@ using DemoLinq.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
 
 namespace DemoLinq.Controllers
 {
@@ -37,6 +38,15 @@ namespace DemoLinq.Controllers
             //Stocker le compteur dans la session
             HttpContext.Session.SetInt32("compteur", compteur);
             ViewBag.Compteur = compteur;
+
+            //Lire les resultats de la session
+            if (HttpContext.Session.Keys.Contains("results"))
+            { 
+                string resultJson = HttpContext.Session.GetString("results");
+                var resultatSession = JsonSerializer.Deserialize<List<Lieu>>(resultJson);
+
+                ViewBag.Json = resultatSession.Count;
+            }
 
             int pageSize = 10; // Nombre d'ingrédients par page
             return View(await PaginatedList<Lieu>.CreateAsync(_context.Lieux.AsNoTracking(),
@@ -68,6 +78,16 @@ namespace DemoLinq.Controllers
             IQueryable<Lieu> requete = from lieu in _context.Lieux
                                        where lieu.Nom.Contains(recherche)
                                        select lieu;
+
+            //Stocker la liste de résultats dans la session
+            string jsonString = JsonSerializer.Serialize(requete.ToList());
+            HttpContext.Session.SetString("results", jsonString);
+
+            //Lire les resultats de la session
+            string resultJson = HttpContext.Session.GetString("results");
+            var resultatSession = JsonSerializer.Deserialize<List<Lieu>>(resultJson);
+
+            ViewBag.Json = resultatSession.Count;
 
             int pageSize = 5; // Nombre d'objets par page
             return View("Index", await PaginatedList<Lieu>.CreateAsync(requete.AsNoTracking(),
