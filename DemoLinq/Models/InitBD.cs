@@ -48,6 +48,7 @@ namespace DemoLinq.Models
                 context.Lieux.AddRange(ll);
                 context.SaveChanges();
             }
+            
 
             RoleManager<IdentityRole> _roleManager = 
                 applicationBuilder.ApplicationServices.CreateScope()
@@ -83,6 +84,34 @@ namespace DemoLinq.Models
 
             //Associer le rôle admin à notre user
             IdentityResult resultA = await _userManager.AddToRoleAsync(userA, roleA.Name);
+
+
+            Lieu l = context.Lieux.First();
+            Livraison livraison = new Livraison()
+            {
+                Date = DateTime.Now,
+                Lieu = l,
+                Toilettes = new List<Toilettes>(),
+                UserId = userA.Id
+            };
+            Toilettes t = new Toilettes()
+            {
+                Capacite = 100,
+                Livraison = livraison
+            };
+            //livraison.Toilettes.Add(t);
+
+            if (!context.Livraisons.Any())
+            {
+                context.Livraisons.Add(livraison);
+                context.SaveChanges();
+            }
+            
+            if (!context.Toilettes.Any())
+            {
+                context.Toilettes.Add(t);
+                context.SaveChanges();
+            }
 
         }
     }

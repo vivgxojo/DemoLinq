@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
+using NuGet.Protocol;
 
 namespace DemoLinq.Controllers
 {
@@ -49,7 +50,11 @@ namespace DemoLinq.Controllers
             }
 
             int pageSize = 10; // Nombre d'ingrédients par page
-            return View(await PaginatedList<Lieu>.CreateAsync(_context.Lieux.AsNoTracking(),
+            return View(await PaginatedList<Lieu>.CreateAsync(
+                _context.Lieux
+                .Include(l => l.Livraisons)
+                //.ThenInclude(l => l.Toilettes)
+                .AsNoTracking(),
                 pageNumber ?? 1, pageSize)); // Créer une page avec une liste paginée
 
            //return View(await _context.Lieux.ToListAsync());

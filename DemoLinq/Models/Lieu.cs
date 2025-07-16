@@ -9,5 +9,7 @@
         public long? Latitude { get; set; }
         public long? Longitude { get; set; }
         public long? Superficie { get; set; }
+        
+        public List<Livraison> Livraisons { get; set; } // Navigation
     }
 }

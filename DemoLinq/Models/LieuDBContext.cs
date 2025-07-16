@@ -9,5 +9,9 @@ namespace DemoLinq.Models
         : base(options) { }
 
         public DbSet<Lieu> Lieux { get; set; }
+
+        public DbSet<Toilettes> Toilettes { get; set; }
+
+        public DbSet<Livraison> Livraisons { get; set; }
     }
 }

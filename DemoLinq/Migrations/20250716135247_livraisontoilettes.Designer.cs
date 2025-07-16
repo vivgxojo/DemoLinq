@@ -4,6 +4,7 @@ using DemoLinq.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DemoLinq.Migrations
 {
     [DbContext(typeof(LieuDBContext))]
-    partial class LieuDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250716135247_livraisontoilettes")]
+    partial class livraisontoilettes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,14 +70,9 @@ namespace DemoLinq.Migrations
                     b.Property<int>("LieuId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("LieuId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Livraisons");
                 });
@@ -301,18 +299,12 @@ namespace DemoLinq.Migrations
             modelBuilder.Entity("DemoLinq.Models.Livraison", b =>
                 {
                     b.HasOne("DemoLinq.Models.Lieu", "Lieu")
-                        .WithMany("Livraisons")
+                        .WithMany()
                         .HasForeignKey("LieuId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Lieu");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DemoLinq.Models.Toilettes", b =>
@@ -375,11 +367,6 @@ namespace DemoLinq.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("DemoLinq.Models.Lieu", b =>
-                {
-                    b.Navigation("Livraisons");
                 });
 
             modelBuilder.Entity("DemoLinq.Models.Livraison", b =>
